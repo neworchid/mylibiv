@@ -31,6 +31,8 @@ buildscript {
 }
 
 allprojects {
+  group = "com.fdln"
+  version = "1.0.3"
     repositories {
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
@@ -51,3 +53,36 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+
+
+subprojects {
+  apply plugin: "maven-publish"
+  project.afterEvaluate {
+    if (!plugins.hasPlugin("android")) {
+      publishing {
+        publications {
+          maven(MavenPublication) {
+            afterEvaluate {
+              artifactId = "$project.name"
+              if (plugins.hasPlugin("java")) {
+                from components.java
+              } else if (plugins.hasPlugin("android-library")) {
+                from components.release
+              }
+            }
+            repositories {
+              maven {
+                url = "https://maven.pkg.github.com/neworchid/mylibiv/"
+                credentials {
+                  username = "neworchid"
+                  password = "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"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
